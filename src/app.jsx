@@ -1,5 +1,5 @@
 import React from 'react';
-import WebView from 'react-electron-web-view';
+import SelectableWebView from './SelectableWebView';
 
 export default class App extends React.Component {
   constructor() {
@@ -13,21 +13,18 @@ export default class App extends React.Component {
     this.setState(() => ({ selectedIndex }));
   }
 
-  renderWebView(url, index) {
-    const isSelected = this.state.selectedIndex === index;
-    const className = {
-      zIndex: isSelected ? 99 : index,
-      visibility: isSelected ? 'visible' : 'hidden'
-    };
-    return <WebView src={url} style={className}/>
-  }
-
   render() {
     const webViews = [
-      "https://www.google.com",
-      "https://www.github.com",
-      "https://www.atom.io"
-    ].map((url, index) => this.renderWebView(url, index));
+      "http://httpbin.org/user-agent",
+      "http://httpbin.org/redirect-to?url=http%3A%2F%2Fhttpbin.org%2Fip",
+      "http://httpbin.org/redirect/20"
+    ].map((url, index) => (
+      <SelectableWebView
+        key={index}
+        src={url}
+        isSelected={this.state.selectedIndex === index}
+      />
+    ));
 
     return (
       <div className="root">
@@ -36,9 +33,9 @@ export default class App extends React.Component {
         </div>
 
         <div className="switcher">
-          <input type="button" onClick={this.onSelectWebView.bind(this, 0)} value="Switch to 1"/>
-          <input type="button" onClick={this.onSelectWebView.bind(this, 1)} value="Switch to 2"/>
-          <input type="button" onClick={this.onSelectWebView.bind(this, 2)} value="Switch to 3"/>
+          <input type="button" onClick={this.onSelectWebView.bind(this, 0)} value="1"/>
+          <input type="button" onClick={this.onSelectWebView.bind(this, 1)} value="2"/>
+          <input type="button" onClick={this.onSelectWebView.bind(this, 2)} value="3"/>
         </div>
       </div>
     );
