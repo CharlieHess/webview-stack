@@ -10,6 +10,15 @@ export default class App extends React.Component {
   }
 
   onSelectWebView(selectedIndex) {
+    if (selectedIndex !== 0) {
+      const webView = this.webView0;
+      const url = `http://httpbin.org/delay/${selectedIndex}`;
+
+      if (webView.webView.executeJavaScript) {
+        webView.webView.executeJavaScript(`document.location.href = '${url}'`)
+      }
+    }
+
     this.setState(() => ({ selectedIndex }));
   }
 
@@ -23,6 +32,7 @@ export default class App extends React.Component {
         key={index}
         src={url}
         isSelected={this.state.selectedIndex === index}
+        ref={(webView) => this[`webView${index}`] = webView}
       />
     ));
 

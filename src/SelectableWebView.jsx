@@ -16,10 +16,12 @@ export default class WebViewWrapper extends React.Component {
 
   componentDidMount() {
     this.webView.addEventListener('did-start-loading', () => {
+      console.log(this.props.src, 'is loading');
       this.setState(() => ({ isLoading: true }));
     });
 
     this.webView.addEventListener('did-stop-loading', () => {
+      console.log(this.props.src, 'stopped loading');
       this.setState(() => ({ isLoading: false }));
     });
   }
