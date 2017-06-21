@@ -10,20 +10,14 @@ export default class App extends React.Component {
   }
 
   onSelectWebView(selectedIndex) {
-    if (selectedIndex !== 0) {
-      const webView = this.webView0;
-      const url = `http://httpbin.org/delay/${selectedIndex}`;
-      webView.executeJavaScript(`document.location.href = '${url}'`)
-    }
-
     this.setState(() => ({ selectedIndex }));
   }
 
   render() {
     const webViews = [
-      "http://httpbin.org/user-agent",
-      "http://httpbin.org/redirect-to?url=http%3A%2F%2Fhttpbin.org%2Fip",
-      "http://httpbin.org/redirect/20"
+      "https://electronhq.slack.com/messages",
+      "https://sfutes.slack.com/messages",
+      "https://atomio.slack.com/messages"
     ].map((url, index) => (
       <SelectableWebView
         key={index}
