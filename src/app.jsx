@@ -13,10 +13,7 @@ export default class App extends React.Component {
     if (selectedIndex !== 0) {
       const webView = this.webView0;
       const url = `http://httpbin.org/delay/${selectedIndex}`;
-
-      if (webView.webView.executeJavaScript) {
-        webView.webView.executeJavaScript(`document.location.href = '${url}'`)
-      }
+      webView.executeJavaScript(`document.location.href = '${url}'`)
     }
 
     this.setState(() => ({ selectedIndex }));

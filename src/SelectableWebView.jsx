@@ -10,10 +10,6 @@ export default class WebViewWrapper extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.isSelected !== prevProps.isSelected) this.forceUpdate();
-  }
-
   componentDidMount() {
     this.webView.addEventListener('did-start-loading', () => {
       console.log(this.props.src, 'is loading');
@@ -22,6 +18,15 @@ export default class WebViewWrapper extends React.Component {
 
     this.webView.addEventListener('did-stop-loading', () => {
       console.log(this.props.src, 'stopped loading');
+      this.setState(() => ({ isLoading: false }));
+    });
+  }
+
+  executeJavaScript(code) {
+    if (!this.webView || !this.webView.executeJavaScript) return;
+
+    this.setState(() => ({ isLoading: true }));
+    this.webView.executeJavaScript(code, () => {
       this.setState(() => ({ isLoading: false }));
     });
   }
