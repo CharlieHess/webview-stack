@@ -3,40 +3,33 @@ import { omit } from 'lodash';
 import React from 'react';
 
 export default class WebViewWrapper extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      isLoading: true
-    };
-  }
-
   componentDidMount() {
-    this.webView.addEventListener('did-start-loading', () => {
-      console.log(this.props.src, 'is loading');
-      this.setState(() => ({ isLoading: true }));
-    });
+    const eventsToLog = [
+      'did-start-loading',
+      'load-commit',
+      'did-get-redirect-request',
+      'dom-ready',
+      'did-finish-load',
+      'did-stop-loading',
+      'will-navigate'
+    ];
 
-    this.webView.addEventListener('did-stop-loading', () => {
-      console.log(this.props.src, 'stopped loading');
-      this.setState(() => ({ isLoading: false }));
+    eventsToLog.forEach((name) => {
+      this.webView.addEventListener(name, () => {
+        console.log(this.props.src, name);
+      });
     });
   }
 
-  executeJavaScript(code) {
-    if (!this.webView || !this.webView.executeJavaScript) return;
-
-    this.setState(() => ({ isLoading: true }));
-    this.webView.executeJavaScript(code, () => {
-      this.setState(() => ({ isLoading: false }));
-    });
+  componentDidUpdate(prevProps) {
+    if (!this.props.isSelected) {
+      this.webView.executeJavaScript('document.body.style.visibility = \'hidden\'');
+    } else {
+      this.webView.executeJavaScript('document.body.style.visibility = \'visible\'');
+    }
   }
 
   render() {
-    const isLoading = this.state.isLoading;
-    const style = {
-      visibility: this.props.isSelected || isLoading ? 'visible' : 'hidden'
-    };
-
     const className = classNames({
       isSelected: this.props.isSelected
     });
@@ -44,7 +37,6 @@ export default class WebViewWrapper extends React.Component {
     return (
       <webview
         ref={(webView) => this.webView = webView}
-        style={style}
         className={className}
         {...omit(this.props, 'isSelected')}
       />
