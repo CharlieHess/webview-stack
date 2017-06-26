@@ -10,13 +10,17 @@ export default class App extends React.Component {
   }
 
   onSelectWebView(selectedIndex) {
-    this.setState(() => ({ selectedIndex }));
+    const { clientHeight, clientWidth } = document.getElementsByClassName('webViewHost')[0];
+    this[`webView${selectedIndex}`].setVisibility(true, clientHeight, clientWidth)
+      .then(() => {
+        setTimeout(() => this.setState(() => ({ selectedIndex })), 50)
+      })
   }
 
   render() {
     const webViews = [
       "https://electronhq.slack.com/messages",
-      "https://sfutes.slack.com/messages",
+      "https://helixcorp.slack.com/messages",
       "https://atomio.slack.com/messages"
     ].map((url, index) => (
       <SelectableWebView
