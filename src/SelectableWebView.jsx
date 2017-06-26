@@ -21,11 +21,22 @@ export default class WebViewWrapper extends React.Component {
     });
   }
 
+  setVisibility(visibility, height, width) {
+    return new Promise((resolve) => {
+      let code = `document.body.style.visibility = '${visibility}';`
+
+      if (height && width) {
+        code += `document.body.style.height = '${height}px';`
+        code += `document.body.style.width = '${width}px';`
+      }
+
+      this.webView.executeJavaScript(code, resolve);
+    })
+  }
+
   componentDidUpdate(prevProps) {
     if (!this.props.isSelected) {
-      this.webView.executeJavaScript('document.body.style.visibility = \'hidden\'');
-    } else {
-      this.webView.executeJavaScript('document.body.style.visibility = \'visible\'');
+      this.setVisibility('hidden')
     }
   }
 
