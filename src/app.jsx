@@ -11,7 +11,7 @@ export default class App extends React.Component {
 
   onSelectWebView(selectedIndex) {
     const { clientHeight, clientWidth } = document.getElementsByClassName('webViewHost')[0];
-    this[`webView${selectedIndex}`].setVisibility('visible', clientHeight, clientWidth)
+    this[`webView${selectedIndex}`].setVisibility(true, clientHeight, clientWidth)
       .then(() => {
         setTimeout(() => this.setState(() => ({ selectedIndex })), 50)
       })

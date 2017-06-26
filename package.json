@@ -27,7 +27,9 @@
           "rpm"
         ]
       },
-      "electronPackagerConfig": {},
+      "electronPackagerConfig": {
+        "asar": true
+      },
       "electronWinstallerConfig": {
         "name": "webview_stack"
       },
