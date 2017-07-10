@@ -3,33 +3,14 @@
   height: 100vh;
 }
 
-.webViewHost {
-  width: 100%;
-  height: 100vh;
-  position: absolute;
-  left: 72px;
-}
-
-webview {
-  position: absolute;
-
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-
-  &:not(.isSelected) {
-    flex: 0 1;
-    width: 0px;
-    height: 0px;
-    z-index: -1;
-  }
-}
-
 .switcher {
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 72px;
+
+  position: absolute;
+  top: 30px;
 
   input {
     width: 60px;

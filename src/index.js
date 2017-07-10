@@ -1,61 +1,84 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, BrowserView, ipcMain } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let browserViews = {};
+let teamUrls = [
+  'https://electronhq.slack.com/messages',
+  'https://sfutes.slack.com/messages',
+  'https://atomio.slack.com/messages'
+];
 
+const sidebarWidth = 72;
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
 if (isDevMode) enableLiveReload({strategy: 'react-hmr'});
 
 const createWindow = async () => {
-  // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
+    titleBarStyle: 'hidden'
   });
 
-  // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
-  // Open the DevTools.
   if (isDevMode) {
     await installExtension(REACT_DEVELOPER_TOOLS);
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   }
 
-  // Emitted when the window is closed.
   mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null;
+  });
+
+  setBrowserViewForUrl(teamUrls[0]);
+
+  ipcMain.on('team-switch', (e, index) => {
+    setBrowserViewForUrl(teamUrls[index]);
   });
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
 
-// Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow();
+function setBrowserViewForUrl(url) {
+  if (browserViews[url]) {
+    setBrowserView(browserViews[url]);
+    return;
   }
-});
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+  const view = new BrowserView({
+    webPreferences: {
+      nodeIntegration: false
+    }
+  });
+
+  setBrowserView(view);
+  view.webContents.loadURL(url);
+  browserViews[url] = view;
+}
+
+function setBrowserView(view) {
+  mainWindow.setBrowserView(view);
+
+  const [width, height] = mainWindow.getSize();
+
+  view.setBounds({
+    x: sidebarWidth,
+    y: 0,
+    width: width - sidebarWidth,
+    height: height
+  });
+
+  view.setAutoResize({
+    width: true,
+    height: true
+  });
+
+  view.webContents.focus();
+}
