@@ -41,6 +41,10 @@ export default class App extends React.Component {
     ipcRenderer.send('team-switch', selectedIndex);
   }
 
+  addNewTeam() {
+    ipcRenderer.send('add-new-team');
+  }
+
   render() {
     return (
       <div className="root">
@@ -48,6 +52,7 @@ export default class App extends React.Component {
           <input type="button" onClick={this.selectTeam.bind(this, 0)} value="1"/>
           <input type="button" onClick={this.selectTeam.bind(this, 1)} value="2"/>
           <input type="button" onClick={this.selectTeam.bind(this, 2)} value="3"/>
+          <input type="button" onClick={this.addNewTeam.bind(this)} />
         </div>
       </div>
     );

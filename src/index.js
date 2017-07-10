@@ -38,6 +38,15 @@ const createWindow = async () => {
   ipcMain.on('team-switch', (e, index) => {
     setBrowserViewForUrl(teamUrls[index]);
   });
+
+  ipcMain.on('add-new-team', () => {
+    setBrowserViewForUrl('https://slack.com/signin');
+  });
+
+  ipcMain.on('did-sign-in', (e, team) => {
+    teamUrls.push(team.team_url);
+    setBrowserViewForUrl(team.team_url);
+  });
 };
 
 app.on('ready', createWindow);
@@ -54,7 +63,8 @@ function setBrowserViewForUrl(url) {
 
   const view = new BrowserView({
     webPreferences: {
-      nodeIntegration: false
+      nodeIntegration: false,
+      preload: require.resolve('./preload')
     }
   });
 
@@ -81,4 +91,5 @@ function setBrowserView(view) {
   });
 
   view.webContents.focus();
+  view.webContents.openDevTools();
 }
